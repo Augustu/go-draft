@@ -10,6 +10,7 @@ require (
 	github.com/onsi/ginkgo v1.14.0 // indirect
 	github.com/robfig/cron v1.2.0
 	github.com/tal-tech/go-zero v1.1.5
+	go.etcd.io/etcd v0.0.0-20200402134248-51bdeb39e698
 	google.golang.org/grpc v1.29.1
 	google.golang.org/protobuf v1.25.0
 	gorm.io/driver/mysql v1.0.5
