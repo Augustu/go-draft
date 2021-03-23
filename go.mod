@@ -7,6 +7,7 @@ require (
 	github.com/go-redis/redis/v8 v8.7.1
 	github.com/golang/mock v1.4.4 // indirect
 	github.com/golang/protobuf v1.4.3
+	github.com/jinzhu/inflection v1.0.0
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/robfig/cron v1.2.0
 	github.com/tal-tech/go-zero v1.1.5
