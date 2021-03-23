@@ -14,6 +14,7 @@ const (
 
 type locker struct {
 	client  *redis.Client
+	timer   *time.Ticker
 	context context.Context
 	cancel  context.CancelFunc
 }
@@ -30,7 +31,7 @@ func (l *locker) Lock(key string) error {
 
 	// feed lock with ttl
 	go func() {
-		t := time.NewTicker(ttl / 2)
+		l.timer = time.NewTicker(ttl / 2)
 
 		for {
 			select {
@@ -39,7 +40,7 @@ func (l *locker) Lock(key string) error {
 					fmt.Printf("main thread exit, but unlock key %s failed: %s", key, err.Error())
 				}
 
-			case <-t.C:
+			case <-l.timer.C:
 				if err = l.feed(key); err != nil {
 					fmt.Printf("feed key %s failed: %s", key, err.Error())
 				}
@@ -75,6 +76,8 @@ func (l *locker) feed(key string) error {
 }
 
 func (l *locker) Unlock(key string) error {
+	l.timer.Stop()
+
 	res, err := l.client.Del(l.context, key).Result()
 	if err != nil {
 		return fmt.Errorf("unlock key %s failed: %s", key, err.Error())
