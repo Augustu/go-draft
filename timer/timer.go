@@ -23,5 +23,9 @@ func CronDemo() {
 
 	c.Start()
 
+	c.AddFunc("0 0-59/2 * * * *", func() {
+		fmt.Println("Minutes test-2: ", time.Now().String())
+	})
+
 	select {}
 }

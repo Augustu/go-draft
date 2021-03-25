@@ -14,3 +14,11 @@ func String() string {
 		now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(),
 	)
 }
+
+func Week() int {
+	now := time.Now()
+
+	future := now.AddDate(0, 0, 35)
+	fmt.Println(future.Day())
+	return 0
+}
