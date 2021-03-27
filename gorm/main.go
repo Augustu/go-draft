@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	me "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	// "github.com/Augustu/go-draft/gorm/naming"
@@ -198,17 +199,21 @@ func (c *client) Delete() {
 		log.Fatal(tx.Error)
 	}
 
-	ne := Event{
-		App:     "app",
-		Key:     "key",
-		EventID: "event_id",
-		UID:     "UID",
-		Score:   100.0,
-		OccurAt: t,
-		Remark:  "remark",
-	}
-	tx = c.db.Create(&ne)
+	// ne := Event{
+	// 	App:     "app",
+	// 	Key:     "key",
+	// 	EventID: "event_id",
+	// 	UID:     "UID",
+	// 	Score:   100.0,
+	// 	OccurAt: t,
+	// 	Remark:  "remark",
+	// }
+	tx = c.db.Create(&e)
 	if tx.Error != nil {
+		if tx.Error.(*me.MySQLError).Number == 1062 {
+			log.Printf("duplicate key: %v", e)
+		}
+
 		log.Fatal(tx.Error)
 	}
 }
@@ -238,11 +243,12 @@ func main() {
 	// c.Create(10000)
 
 	// query page
-	c.QueryPage(0, 5)
+	// c.QueryPage(0, 5)
 	// c.QueryPage(5, 5)
 
 	// QueryUID by uid
 	// c.QueryUID(0, 5, "IRKXCPGIYMPG")
 
-	// c.Delete()
+	c.Delete()
+
 }
