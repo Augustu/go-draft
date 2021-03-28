@@ -218,6 +218,23 @@ func (c *client) Delete() {
 	}
 }
 
+func (c *client) Find() {
+	e := Event{
+		App:     "app-1", // will not found
+		Key:     "key-1",
+		EventID: "event_id",
+	}
+
+	var ne Event
+
+	tx := c.db.Where(&e).Find(&ne)
+	if tx.Error != nil {
+		log.Fatal(tx.Error)
+	}
+
+	log.Println(ne)
+}
+
 func main1() {
 	fmt.Println(RandString(32))
 	fmt.Println(RandomFloat64())
@@ -249,6 +266,7 @@ func main() {
 	// QueryUID by uid
 	// c.QueryUID(0, 5, "IRKXCPGIYMPG")
 
-	c.Delete()
+	// c.Delete()
+	c.Find()
 
 }

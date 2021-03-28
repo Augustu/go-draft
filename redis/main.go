@@ -98,6 +98,15 @@ func (c *client) rankZSet(key string, count int64) error {
 	return nil
 }
 
+func (c *client) getZSetTotal(key string) (int64, error) {
+	res, err := c.ZCard(c.context, key).Result()
+	if err != nil {
+		log.Printf("get zset: %s total failed: %s", key, err.Error())
+		return res, err
+	}
+	return res, nil
+}
+
 func (c *client) genHash(key string, num int) error {
 	batchsize := 100
 

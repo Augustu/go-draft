@@ -19,6 +19,10 @@ func Week() int {
 	now := time.Now()
 
 	future := now.AddDate(0, 0, 35)
-	fmt.Println(future.Day())
+	fmt.Println(future)
+	fmt.Println(future.Round(time.Hour))
+	fmt.Println(future.Round(24 * time.Hour))
+	fmt.Println(future.Round(7 * 24 * time.Hour))
+	fmt.Println(future.Round(30 * 24 * time.Hour))
 	return 0
 }
