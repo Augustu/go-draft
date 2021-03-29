@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"math/rand"
@@ -23,6 +24,19 @@ type Event struct {
 	CreatedAt time.Time `gorm:"index"`
 	OccurAt   time.Time
 	Remark    string
+}
+
+type Rank struct {
+	gorm.Model
+	UID        string  `gorm:"index"`
+	Score      float64 `gorm:"index"`
+	Rank       int
+	PeriodType string `grom:"index"`
+	// use time.XXXString indicate date time
+	PeriodAt string `grom:"index"`
+	// create in redis time
+	CachedAt   time.Time
+	RingGrowth int
 }
 
 func test() {
@@ -235,6 +249,51 @@ func (c *client) Find() {
 	log.Println(ne)
 }
 
+func (c *client) CreateRanks() {
+	var ranks []Rank
+
+	for i := 0; i < 10; i++ {
+		ranks = append(ranks, Rank{
+			UID:        RandString(8),
+			Score:      RandomFloat64() * 100,
+			Rank:       rand.Int(),
+			PeriodType: RandString(8),
+			PeriodAt:   RandString(8),
+			CachedAt:   time.Now(),
+		})
+	}
+
+	tx := c.db.Create(&ranks)
+	if tx.Error != nil {
+		panic(tx.Error)
+	}
+}
+
+func (c *client) QueryRanks() {
+	var ranks []Rank
+
+	tx := c.db.Raw(`select r1.*, ifnull((r1.rank - r2.rank), 0) as ring_growth
+	from (
+		select * from ranks where period_type = @period1
+	) as r1
+	left join (
+		select * from ranks where period_type = @period2
+	) as r2
+	on r1.uid = r2.uid
+	order by ring_growth desc`,
+		sql.Named("period1", "YQBVBBQT"),
+		sql.Named("period2", "VRHZOQYD"),
+	).Find(&ranks)
+
+	if tx.Error != nil {
+		panic(tx.Error)
+	}
+
+	for idx, r := range ranks {
+		log.Printf("%d %+v", idx, r)
+	}
+}
+
 func main1() {
 	fmt.Println(RandString(32))
 	fmt.Println(RandomFloat64())
@@ -267,6 +326,9 @@ func main() {
 	// c.QueryUID(0, 5, "IRKXCPGIYMPG")
 
 	// c.Delete()
-	c.Find()
+	// c.Find()
+
+	// c.CreateRanks()
+	c.QueryRanks()
 
 }
