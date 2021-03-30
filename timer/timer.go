@@ -29,3 +29,15 @@ func CronDemo() {
 
 	select {}
 }
+
+func WeekDemo() {
+	c := cron.New()
+
+	c.AddFunc("0 0 0 1 0-6/1 *", func() {
+		fmt.Println("Week test: ", time.Now().String())
+	})
+
+	c.Start()
+
+	select {}
+}

@@ -1,11 +1,13 @@
 package timer
 
-import "testing"
+// func TestIntergralPoint(t *testing.T) {
+// 	IntergralPoint()
+// }
 
-func TestIntergralPoint(t *testing.T) {
-	IntergralPoint()
-}
+// func TestCronDemo(t *testing.T) {
+// 	CronDemo()
+// }
 
-func TestCronDemo(t *testing.T) {
-	CronDemo()
-}
+// func TestWeekDemo(t *testing.T) {
+// 	WeekDemo()
+// }

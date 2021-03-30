@@ -274,15 +274,15 @@ func (c *client) QueryRanks() {
 
 	tx := c.db.Raw(`select r1.*, ifnull((r1.rank - r2.rank), 0) as ring_growth
 	from (
-		select * from ranks where period_type = @period1
+		select * from ranks where period_at = @period1
 	) as r1
 	left join (
-		select * from ranks where period_type = @period2
+		select * from ranks where period_at = @period2
 	) as r2
 	on r1.uid = r2.uid
 	order by ring_growth desc`,
-		sql.Named("period1", "YQBVBBQT"),
-		sql.Named("period2", "VRHZOQYD"),
+		sql.Named("period1", "QSWDN"),
+		sql.Named("period2", "SUWVN"),
 	).Find(&ranks)
 
 	if tx.Error != nil {
@@ -292,6 +292,26 @@ func (c *client) QueryRanks() {
 	for idx, r := range ranks {
 		log.Printf("%d %+v", idx, r)
 	}
+
+	var total int
+	tx = c.db.Raw(`select count(1)
+	from (
+		select * from ranks where period_at = @period1
+	) as r1
+	left join (
+		select * from ranks where period_at = @period2
+	) as r2
+	on r1.uid = r2.uid`,
+		sql.Named("period1", "QSWDN"),
+		sql.Named("period2", "SUWVN"),
+	).Find(&total)
+
+	if tx.Error != nil {
+		panic(tx.Error)
+	}
+
+	log.Printf("total: %d", total)
+
 }
 
 func main1() {
