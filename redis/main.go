@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/Augustu/go-draft/utils"
@@ -169,6 +170,14 @@ func (c *client) scanHash(key string) error {
 	return nil
 }
 
+func (c *client) listKeys() {
+	keys, err := c.Client.Keys(c.context, "*").Result()
+	if err != nil {
+		log.Fatalf("list key failed: %s", err.Error())
+	}
+	fmt.Println(keys)
+}
+
 func test(c *client) {
 	var err error
 	key := "test"
@@ -236,8 +245,14 @@ func main() {
 		Client:  rc,
 	}
 
+	c.listKeys()
+
+	if "201101" < "201102" {
+		log.Println(true)
+	}
+
 	// test(c)
-	test1(c)
+	// test1(c)
 	// test2(c)
 
 }
