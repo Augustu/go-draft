@@ -56,16 +56,16 @@ func (l *locker) feed(key string) error {
 	retry := 3
 	i := 0
 
-	var res string
+	// var res string
 	var err error
 
 	for i = 0; i < retry; i++ {
-		res, err = l.client.SetEX(l.context, key, true, ttl).Result()
+		_, err = l.client.SetEX(l.context, key, true, ttl).Result()
 		if err != nil {
 			continue
 		}
 
-		fmt.Printf("debug res: %s\n", res)
+		// fmt.Printf("debug res: %s\n", res)
 		return nil
 	}
 
@@ -76,14 +76,14 @@ func (l *locker) feed(key string) error {
 }
 
 func (l *locker) Unlock(key string) error {
-	l.timer.Stop()
 
-	res, err := l.client.Del(l.context, key).Result()
+	_, err := l.client.Del(l.context, key).Result()
 	if err != nil {
 		return fmt.Errorf("unlock key %s failed: %s", key, err.Error())
 	}
+	l.timer.Stop()
 
-	fmt.Printf("debug res: %d\n", res)
+	// fmt.Printf("debug res: %d\n", res)
 	return nil
 }
 
@@ -110,8 +110,15 @@ func init() {
 	}
 }
 
-func Lock(key string) error {
-	return lock.Lock(key)
+func Lock(key string) {
+	for {
+		err := lock.Lock(key)
+		if err != nil {
+			return
+		}
+		time.Sleep(time.Microsecond)
+	}
+	// return lock.Lock(key)
 }
 
 func Unlock(key string) error {
@@ -120,4 +127,12 @@ func Unlock(key string) error {
 
 func Close() error {
 	return lock.Close()
+}
+
+func NewClient() *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:       "127.0.0.1:6379",
+		DB:         1,
+		MaxRetries: 3,
+	})
 }
