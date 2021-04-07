@@ -11,3 +11,11 @@ package timer
 // func TestWeekDemo(t *testing.T) {
 // 	WeekDemo()
 // }
+
+// func TestMinuteDemo(t *testing.T) {
+// 	MinuteDemo()
+// }
+
+// func TestSecondDemo(t *testing.T) {
+// 	SecondDemo()
+// }
