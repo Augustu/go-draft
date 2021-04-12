@@ -1,9 +1,5 @@
 name: go-draft
-on:
-  pull_request:
-    branches: [master]
-  push:
-    branches: [master]
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,7 +16,6 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
@@ -29,5 +24,4 @@ jobs:
       # - name: Build
       #   run: go build -v ./..
       - name: Test
-        run: go test -v ./..
-
+        run: ls /home/runner/work/go-draft && go test -v ./..
