@@ -7,6 +7,7 @@ require (
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/coreos/etcd v3.3.22+incompatible // indirect
 	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
+	github.com/getsentry/sentry-go v0.10.0
 	github.com/go-redis/redis v6.15.8+incompatible // indirect
 	github.com/go-redis/redis/v8 v8.7.1
 	github.com/go-sql-driver/mysql v1.5.0
