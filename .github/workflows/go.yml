@@ -1,34 +1,34 @@
 name: go-draft
-on: [push]
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches:
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
-
     services:
       redis:
         image: redis
-
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
         ports:
           - 6379:6379
-
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out repository
+        uses: actions/checkout@v2
 
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
           go-version: 1.16
-
       # nothing to build
       # - name: Build
       #   run: go build -v ./..
-
       - name: Test
-        run: ls /home/runner/work/go-draft && go test -v ./..
+        run: go test -v ./..
 
