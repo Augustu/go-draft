@@ -24,4 +24,4 @@ jobs:
       # - name: Build
       #   run: go build -v ./..
       - name: Test
-        run: cd go-draft && go test -v ./..
+        run: go test -v ./..
