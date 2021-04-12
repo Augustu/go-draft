@@ -26,7 +26,7 @@ func (l *locker) Lock(key string) error {
 	}
 
 	if !res {
-		return fmt.Errorf("key %s alreay locked", key)
+		return fmt.Errorf("key %s already locked", key)
 	}
 
 	// feed lock with ttl
@@ -118,7 +118,6 @@ func Lock(key string) {
 		}
 		time.Sleep(time.Microsecond)
 	}
-	// return lock.Lock(key)
 }
 
 func Unlock(key string) error {

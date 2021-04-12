@@ -102,7 +102,6 @@ func TestAdd(t *testing.T) {
 				Lock(lockKey)
 				_, err := c.ZIncrBy(lock.context, key, 1, "m").Result()
 				if err != nil {
-					log.Print(err)
 					t.Fail()
 				}
 				Unlock(lockKey)
@@ -121,10 +120,7 @@ func TestAdd(t *testing.T) {
 
 			nk := fmt.Sprintf("%s-%d", key, i)
 
-			_, err := c.Rename(lock.context, key, nk).Result()
-			if err != nil {
-				t.Fail()
-			}
+			c.Rename(lock.context, key, nk).Result()
 
 			// _, err := c.ZUnionStore(lock.context, nk, &redis.ZStore{Keys: []string{key}}).Result()
 			// if err != nil {
@@ -142,17 +138,17 @@ func TestAdd(t *testing.T) {
 
 	var count float64 = 0
 
-	for i, s := range h {
-		score, err := c.ZScore(lock.context, s, "m").Result()
-		if err != nil {
-			t.Fail()
-		}
-		fmt.Printf("%d %f\n", i, score)
+	for _, s := range h {
+		score, _ := c.ZScore(lock.context, s, "m").Result()
 
 		count += score
 	}
 
 	fmt.Printf("count: %f\n", count)
+
+	if count != 250000 {
+		t.Fail()
+	}
 
 	// c := NewClient()
 	// for i := 0; i < 5; i++ {
