@@ -24,4 +24,4 @@ jobs:
       # - name: Build
       #   run: go build -v ./..
       - name: Test
-        run: go test -v ./..
+        run: /usr/bin/ls /home/runner/work/go-draft && /usr/bin/cd /usr/bin/ls /home/runner/work/go-draft/go-draft && go test -v ./..
