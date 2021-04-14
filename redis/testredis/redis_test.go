@@ -1,6 +1,8 @@
 package testredis
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestRedis(t *testing.T) {
 	err := Redis()
@@ -8,3 +10,11 @@ func TestRedis(t *testing.T) {
 		t.Fail()
 	}
 }
+
+// func TestRedisAuth(t *testing.T) {
+// 	err := RedisAuth()
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		t.Fail()
+// 	}
+// }
