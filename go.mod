@@ -13,7 +13,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.3
 	github.com/jinzhu/inflection v1.0.0
-	github.com/json-iterator/go v1.1.10 // indirect
+	github.com/json-iterator/go v1.1.10
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/natefinch/lumberjack v2.0.0+incompatible
