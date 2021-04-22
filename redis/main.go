@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sort"
 
 	"github.com/Augustu/go-draft/utils"
 	"github.com/go-redis/redis/v8"
@@ -178,6 +179,41 @@ func (c *client) listKeys() {
 	fmt.Println(keys)
 }
 
+func (c *client) scanKeys() {
+	var cursor uint64
+	var keys []string
+	var err error
+
+	for {
+		keys, cursor, err = c.Client.Scan(c.context, cursor, "testkey-1*", 10).Result()
+		if err != nil {
+			return
+		}
+
+		sort.Slice(keys, func(i, j int) bool {
+			min := len(keys[i])
+			if min > len(keys[j]) {
+				min = len(keys[j])
+			}
+			for k := 0; k < min; k++ {
+				if keys[i][k] > keys[j][k] {
+					return true
+				}
+			}
+			return len(keys[i]) < len(keys[j])
+		})
+
+		for _, k := range keys {
+			fmt.Println(k)
+		}
+
+		if cursor == 0 {
+			return
+		}
+	}
+
+}
+
 func test(c *client) {
 	var err error
 	key := "test"
@@ -236,7 +272,7 @@ func test2(c *client) {
 func main() {
 	rc := redis.NewClient(&redis.Options{
 		Addr:       "127.0.0.1:6379",
-		DB:         0,
+		DB:         1,
 		MaxRetries: 3,
 	})
 
@@ -245,11 +281,13 @@ func main() {
 		Client:  rc,
 	}
 
-	c.listKeys()
+	c.scanKeys()
 
-	if "201101" < "201102" {
-		log.Println(true)
-	}
+	// c.listKeys()
+
+	// if "201101" < "201102" {
+	// 	log.Println(true)
+	// }
 
 	// test(c)
 	// test1(c)

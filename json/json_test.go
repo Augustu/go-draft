@@ -1,9 +1,10 @@
 package json
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
+
+	json "github.com/json-iterator/go"
 )
 
 type test struct {
@@ -25,6 +26,9 @@ func TestMarshal(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
+
+	res := json.Get(body, "map", "a")
+	fmt.Println(res.ToString())
 
 	fmt.Println(string(body))
 

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func main() {
+func mainCase() {
 	a := "test"
 
 	at := strings.ToLower(a)
@@ -19,4 +19,11 @@ func main() {
 	fmt.Println(at)
 
 	fmt.Printf("%s%s", hs, at[1:])
+}
+
+func main() {
+	// test := "a-b-c--d"
+	test := "-a-b"
+	l := strings.Split(test, "-")
+	fmt.Println(len(l), l)
 }

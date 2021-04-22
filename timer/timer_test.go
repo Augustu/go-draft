@@ -1,5 +1,11 @@
 package timer
 
+import (
+	"fmt"
+	"testing"
+	"time"
+)
+
 // func TestIntergralPoint(t *testing.T) {
 // 	IntergralPoint()
 // }
@@ -19,3 +25,10 @@ package timer
 // func TestSecondDemo(t *testing.T) {
 // 	SecondDemo()
 // }
+
+func TestTimer(t *testing.T) {
+	tr := time.NewTimer(3 * time.Second)
+	<-tr.C
+	fmt.Println("timeout")
+
+}

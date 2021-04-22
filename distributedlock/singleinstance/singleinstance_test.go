@@ -99,12 +99,12 @@ func TestAdd(t *testing.T) {
 		go func() {
 			c := NewClient()
 			for i := 0; i < total; i++ {
-				Lock(lockKey)
+				// Lock(lockKey)
 				_, err := c.ZIncrBy(lock.context, key, 1, "m").Result()
 				if err != nil {
 					t.Fail()
 				}
-				Unlock(lockKey)
+				// Unlock(lockKey)
 			}
 			ch <- true
 		}()
