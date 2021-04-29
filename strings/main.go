@@ -22,8 +22,8 @@ func mainCase() {
 }
 
 func main() {
-	// test := "a-b-c--d"
-	test := "-a-b"
+	test := "a-b-c--d"
+	// test := "-a-b"
 	l := strings.Split(test, "-")
 	fmt.Println(len(l), l)
 }

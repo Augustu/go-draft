@@ -5,8 +5,28 @@ import (
 	"time"
 
 	log "github.com/Augustu/go-micro/v2/logger"
+	"github.com/getsentry/raven-go"
 	"github.com/getsentry/sentry-go"
 )
+
+func main1() {
+	raven.SetDSN("http://27af8e6e1b22460793bc405dcdb6a88c@134.175.142.254:9000/29")
+
+	raven.CapturePanic(test, map[string]string{"a": "b"})
+
+	raven.CaptureError(fmt.Errorf("test"), nil)
+}
+
+func test() {
+	// defer func() {
+	// 	if err := recover(); err != nil {
+	// 		// sentry.CaptureException(err)
+	// 		fmt.Println(err)
+	// 	}
+	// }()
+
+	panic("test")
+}
 
 func main() {
 	defer func() {
@@ -17,7 +37,8 @@ func main() {
 	}()
 
 	sc := sentry.ClientOptions{
-		Dsn: "test",
+		Dsn:              "test",
+		AttachStacktrace: true,
 	}
 
 	err := sentry.Init(sc)
@@ -29,6 +50,7 @@ func main() {
 	defer sentry.Flush(2 * time.Second)
 	sentry.CaptureMessage("sentry log started")
 	sentry.CaptureMessage("sentry log test started")
+	sentry.CaptureException(fmt.Errorf("test"))
 
 	log.Infof("sentry started")
 	log.Warnf("sentry warn")

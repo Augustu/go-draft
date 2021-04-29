@@ -10,7 +10,7 @@ func main() {
 
 	list := []string{"a", "b", "c"}
 	for idx, l := range list {
-		fmt.Println(idx, l)
+		// fmt.Println(idx, l)
 		if l == "b" {
 			fmt.Println("continue", idx, l)
 			continue
