@@ -1,9 +1,9 @@
 package timer
 
 import (
+	"crypto/md5"
 	"fmt"
 	"testing"
-	"time"
 )
 
 // func TestIntergralPoint(t *testing.T) {
@@ -26,9 +26,15 @@ import (
 // 	SecondDemo()
 // }
 
-func TestTimer(t *testing.T) {
-	tr := time.NewTimer(3 * time.Second)
-	<-tr.C
-	fmt.Println("timeout")
+// func TestTimer(t *testing.T) {
+// 	tr := time.NewTimer(3 * time.Second)
+// 	<-tr.C
+// 	fmt.Println("timeout")
 
+// }
+
+func TestMd5(t *testing.T) {
+	b := md5.Sum([]byte("melo.api"))
+	fmt.Println(b)
+	fmt.Printf("%x\n", b)
 }
