@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func main() {
+func main1() {
 	total := -3
 	for i := 0; i < total; i++ {
 		fmt.Println("i = ", i)
@@ -18,4 +18,12 @@ func main() {
 		fmt.Println(idx, l)
 	}
 
+}
+
+func main() {
+	var a *[]string
+
+	for _, s := range *a {
+		fmt.Println(s)
+	}
 }

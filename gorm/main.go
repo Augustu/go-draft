@@ -27,7 +27,10 @@ type Event struct {
 }
 
 type Rank struct {
-	gorm.Model
+	ID         uint `gorm:"primarykey"`
+	CreatedAt  time.Time
+	App        string
+	Key        string
 	UID        string  `gorm:"index"`
 	Score      float64 `gorm:"index"`
 	Rank       int
@@ -314,6 +317,21 @@ func (c *client) QueryRanks() {
 
 }
 
+func (c *client) QueryRank() {
+	r := Rank{
+		App: "NQFVG",
+		Key: "EYWMJA",
+	}
+
+	nr := Rank{}
+	tx := c.db.Model(&Rank{}).Where(&r).Find(&nr)
+	if tx.Error != nil {
+		log.Print(tx.Error)
+	}
+
+	log.Print(nr)
+}
+
 func main1() {
 	fmt.Println(RandString(32))
 	fmt.Println(RandomFloat64())
@@ -349,6 +367,7 @@ func main() {
 	// c.Find()
 
 	// c.CreateRanks()
-	c.QueryRanks()
+	// c.QueryRanks()
+	c.QueryRank()
 
 }
