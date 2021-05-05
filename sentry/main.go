@@ -10,7 +10,7 @@ import (
 )
 
 func main1() {
-	raven.SetDSN("http://27af8e6e1b22460793bc405dcdb6a88c@134.175.142.254:9000/29")
+	raven.SetDSN("http://48078ee986324a05b2c30741203e0b59@localhost:8080/2")
 
 	raven.CapturePanic(test, map[string]string{"a": "b"})
 
