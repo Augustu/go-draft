@@ -88,7 +88,7 @@ func TestDup(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	lockKey := "LOCKER"
+	// lockKey := "LOCKER"
 	key := "testkey"
 
 	const total int = 500
@@ -116,7 +116,7 @@ func TestAdd(t *testing.T) {
 	for i := 0; i < total; i++ {
 		<-ch
 		if i%11 == 0 {
-			Lock(lockKey)
+			// Lock(lockKey)
 
 			nk := fmt.Sprintf("%s-%d", key, i)
 
@@ -130,7 +130,7 @@ func TestAdd(t *testing.T) {
 			// if err != nil {
 			// 	t.Fail()
 			// }
-			Unlock(lockKey)
+			// Unlock(lockKey)
 
 			h = append(h, nk)
 		}

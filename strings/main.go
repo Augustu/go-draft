@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -21,9 +22,31 @@ func mainCase() {
 	fmt.Printf("%s%s", hs, at[1:])
 }
 
-func main() {
+func mainSplit() {
 	test := "a-b-c--d"
 	// test := "-a-b"
 	l := strings.Split(test, "-")
 	fmt.Println(len(l), l)
+}
+
+func main() {
+	cases := []string{
+		"a-20210301",
+		"a-20210302",
+		"a-20210303",
+	}
+
+	sort.Strings(cases)
+
+	fmt.Println(cases)
+
+	in := []int{
+		20210203,
+		20210204,
+		20210130,
+	}
+
+	sort.Ints(in)
+
+	fmt.Println(in)
 }
