@@ -12,6 +12,13 @@ import (
 // 	}
 // }
 
+func TestRedisPipeline(t *testing.T) {
+	err := RedisPipeline()
+	if err != nil {
+		t.Fail()
+	}
+}
+
 func TestRedisAuth(t *testing.T) {
 	err := RedisAuth()
 	if err != nil {
