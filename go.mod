@@ -7,6 +7,8 @@ require (
 	github.com/RichardKnop/machinery v1.10.5
 	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/emicklei/go-restful/v3 v3.5.1
 	github.com/getsentry/raven-go v0.2.0
 	github.com/getsentry/sentry-go v0.10.0
 	github.com/go-redis/redis/v8 v8.7.1
