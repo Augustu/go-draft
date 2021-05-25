@@ -354,7 +354,7 @@ func main() {
 	// 	Remark:    RandString(32),
 	// })
 
-	// c.Create(10000)
+	c.Create(100)
 
 	// query page
 	// c.QueryPage(0, 5)
@@ -368,6 +368,6 @@ func main() {
 
 	// c.CreateRanks()
 	// c.QueryRanks()
-	c.QueryRank()
+	// c.QueryRank()
 
 }
