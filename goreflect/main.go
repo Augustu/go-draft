@@ -54,40 +54,53 @@ func updateStruct(s interface{}, u U) {
 // notice here u is V struct
 func updateStructInterface(s interface{}, u V) {
 
+	zi := 0
+	zs := ""
+
 	v := reflect.ValueOf(s).Elem()
 	t := v.Type()
 
 	for i := 0; i < v.NumField(); i++ {
+		var a interface{}
+		var z interface{}
+
 		f := t.Field(i)
 
-		if f.Tag.Get("json") == u.Key {
+		k := v.Field(i).Kind()
+		ty := v.Field(i).Type()
 
-			s := v.Field(i).Type().String()
-			if strings.Contains(s, "int") {
-				n, ok := convertInt(u.Value)
-				if ok {
-					var a interface{}
-					if v.Field(i).Kind() == reflect.Ptr {
-						a = &n
-					} else {
-						a = n
-					}
-					v.Field(i).Set(reflect.ValueOf(a))
-				}
+		fmt.Println(t.Field(i).Name, k, ty)
 
-			} else if strings.Contains(s, "string") {
-				n, ok := convertString(u.Value)
-				if ok {
-					var a interface{}
-					if v.Field(i).Kind() == reflect.Ptr {
-						a = &n
-					} else {
-						a = n
-					}
-					v.Field(i).Set(reflect.ValueOf(a))
+		if strings.Contains(ty.String(), "int") {
+			n, ok := convertInt(u.Value)
+			if ok {
+				if v.Field(i).Kind() == reflect.Ptr {
+					a = &n
+					z = &zi
+				} else {
+					a = n
+					z = zi
 				}
 			}
+		} else if strings.Contains(ty.String(), "string") {
+			n, ok := convertString(u.Value)
+			if ok {
+				if v.Field(i).Kind() == reflect.Ptr {
+					a = &n
+					z = &zs
+				} else {
+					a = n
+					z = zs
+				}
+			}
+		}
 
+		fmt.Println("za", z, a, k.String(), ty.String())
+
+		if f.Tag.Get("json") == u.Key {
+			v.Field(i).Set(reflect.ValueOf(a))
+		} else {
+			v.Field(i).Set(reflect.ValueOf(z))
 		}
 
 	}
@@ -176,4 +189,14 @@ func main() {
 	v.Key = "d"
 	updateStructInterface(&b, v)
 	fmt.Println(b, *b.D)
+}
+
+func main2() {
+	var a int = 1
+
+	fmt.Println(reflect.TypeOf(a))
+	fmt.Println(reflect.TypeOf(&a))
+
+	t := reflect.TypeOf(&a)
+	fmt.Println(t.Kind(), t.Elem(), t.Elem().Kind())
 }
