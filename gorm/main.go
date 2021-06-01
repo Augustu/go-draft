@@ -332,6 +332,46 @@ func (c *client) QueryRank() {
 	log.Print(nr)
 }
 
+type MyModel struct {
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	// DeletedAt DeletedAt `gorm:"index"`
+}
+
+type Collection struct {
+	MyModel
+	App  string `gorm:"type:varchar(8)"`
+	Name string `gorm:"type:varchar(12)"`
+	Type string `gorm:"type:varchar(8)"`
+	Unit string `gorm:"type:varchar(8)"`
+	Key  string `gorm:"type:varchar(16)"`
+
+	DeletedAt gorm.DeletedAt //`gorm:"index"`
+}
+
+func (c *client) CreateAndDelete() {
+	coll := Collection{
+		App:  "a",
+		Name: "b",
+		Type: "c",
+		Unit: "d",
+		Key:  "e",
+	}
+
+	c.db = c.db.Debug()
+
+	err := c.db.Create(&coll).Error
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = c.db.Delete(&coll).Error
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
 func main1() {
 	fmt.Println(RandString(32))
 	fmt.Println(RandomFloat64())
@@ -342,6 +382,8 @@ func main() {
 
 	c := &client{dsn: dsn}
 	c.init()
+
+	c.CreateAndDelete()
 
 	// c.db.Create(&Event{
 	// 	App:       RandString(8),
@@ -354,7 +396,7 @@ func main() {
 	// 	Remark:    RandString(32),
 	// })
 
-	c.Create(100)
+	// c.Create(100)
 
 	// query page
 	// c.QueryPage(0, 5)
