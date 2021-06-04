@@ -71,7 +71,8 @@ func main() {
 		Client:  rc,
 	}
 
-	go c.put("a", 10)
+	// go c.put("a", 10000)
 
 	c.get("a")
+	// select {}
 }
