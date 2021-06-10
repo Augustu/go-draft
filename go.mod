@@ -13,6 +13,7 @@ require (
 	github.com/getsentry/sentry-go v0.10.0
 	github.com/go-redis/redis/v8 v8.7.1
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/graphql-go/graphql v0.7.9
 	github.com/jinzhu/inflection v1.0.0
 	github.com/json-iterator/go v1.1.10
 	github.com/julienschmidt/httprouter v1.2.0
