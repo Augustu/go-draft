@@ -1,0 +1,10 @@
+[0m[33m[1.434ms] [34;1m[rows:0][0m SELECT * FROM `missions_users_data` WHERE mission_id = 118 AND uid = '1269995' ORDER BY `missions_users_data`.`id` LIMIT 1
+[0m[33m[3.695ms] [34;1m[rows:1][0m INSERT INTO `missions_users_data` (`created_at`,`updated_at`,`app`,`uid`,`user_id`,`mission_id`,`data`) VALUES ('2021-06-16 17:31:02.699','2021-06-16 17:31:02.699','huacha','1269995',269996,118,'{"charm_level":"3","uid":"1269995"}')
+[0m[33m[1.615ms] [34;1m[rows:0][0m SELECT * FROM `missions_users_data` WHERE mission_id = 118 AND uid = '1269996' ORDER BY `missions_users_data`.`id` LIMIT 1
+[0m[33m[3.820ms] [34;1m[rows:1][0m INSERT INTO `missions_users_data` (`created_at`,`updated_at`,`app`,`uid`,`user_id`,`mission_id`,`data`) VALUES ('2021-06-16 17:31:02.705','2021-06-16 17:31:02.705','huacha','1269996',269997,118,'{"charm_level":"12","uid":"1269996"}')
+[0m[33m[1.651ms] [34;1m[rows:0][0m SELECT * FROM `missions_users_data` WHERE mission_id = 118 AND uid = '1269998' ORDER BY `missions_users_data`.`id` LIMIT 1
+[0m[33m[2.926ms] [34;1m[rows:1][0m INSERT INTO `missions_users_data` (`created_at`,`updated_at`,`app`,`uid`,`user_id`,`mission_id`,`data`) VALUES ('2021-06-16 17:31:02.71','2021-06-16 17:31:02.71','huacha','1269998',269999,118,'{"charm_level":"2","uid":"1269998"}')
+[0m[33m[1.160ms] [34;1m[rows:0][0m SELECT * FROM `missions_users_data` WHERE mission_id = 118 AND uid = '1269997' ORDER BY `missions_users_data`.`id` LIMIT 1
+[0m[33m[2.973ms] [34;1m[rows:1][0m INSERT INTO `missions_users_data` (`created_at`,`updated_at`,`app`,`uid`,`user_id`,`mission_id`,`data`) VALUES ('2021-06-16 17:31:02.715','2021-06-16 17:31:02.715','huacha','1269997',269998,118,'{"charm_level":"1","uid":"1269997"}')
+[0m[33m[1.113ms] [34;1m[rows:0][0m SELECT * FROM `missions_users_data` WHERE mission_id = 118 AND uid = '1269999' ORDER BY `missions_users_data`.`id` LIMIT 1
+[0m[33m[2.227ms] [34;1m[rows:1][0m INSERT INTO `missions_users_data` (`created_at`,`updated_at`,`app`,`uid`,`user_id`,`mission_id`,`data`) VALUES ('2021-06-16 17:31:02.719','2021-06-16 17:31:02.719','huacha','1269999',270000,118,'{"charm_level":"23","uid":"1269999"}')
