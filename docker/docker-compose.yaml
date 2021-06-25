@@ -1,0 +1,22 @@
+version: "3"
+services:
+  mission:
+    environment:
+      APP_ENV: ""
+      APP_NAME: ""
+      APOLLO_CONFIG_SERVER: "http://apolloxxx.development:8080"
+      APOLLO_CLUSTER: "dev"
+      APOLLO_APP_ID: "mission"
+      APOLLO_NAMESPACES: "application"
+      APOLLO_SAVE_PATH: ""
+    image: "mission:v1"
+    ports:
+    - 127.0.0.1:8000:80
+    deploy:
+      resources:
+        limits:
+          cpus: 100m
+          memory: 200Mi
+        # reservations:
+        #   cpus: '0.5'
+        #   memory: 150M
