@@ -1,0 +1,29 @@
+FROM archlinux:latest
+# FROM alpine:latest
+
+# RUN set -eux && sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+
+# RUN apk --no-cache add make git go gcc libtool musl-dev
+
+# # Configure Go
+# ENV GOROOT /usr/lib/go
+# ENV GOPATH /go
+# ENV PATH /go/bin:$PATH
+
+# RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+
+# RUN go version
+
+# COPY . /
+# RUN GOPROXY="https://goproxy.io" go build -o mission
+
+# RUN rm -rf /var/cache/apk/* /tmp/*
+
+COPY . /
+
+# COPY mission /
+# COPY mission-application.json /
+
+EXPOSE 80
+
+ENTRYPOINT ["/mission"]

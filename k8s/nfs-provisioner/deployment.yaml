@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-client-provisioner
+  labels:
+    app: nfs-client-provisioner
+  # replace with namespace where provisioner is deployed
+  namespace: nfs-client-provisioner  # < change namespace to nfs-client-provisioner
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner
+      containers:
+        - name: nfs-client-provisioner
+          image: k8s.gcr.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2 
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: nfs-dynamic-storage # < new provsioner name
+            - name: NFS_SERVER
+              value: 192.168.50.10 # < IP address of your NAS server
+            - name: NFS_PATH
+              value: /home/augustu/data # < example value of your nfs share
+          resources:
+              limits:
+                cpu: 200Mi
+                memory: 100Mi
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 192.168.50.10 # < IP address of your NAS server
+            path: /home/augustu/data # < example value of your nfs share

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+    name: busyboxplus
+    namespace: dev
+spec:
+    dnsPolicy: Default
+    containers:
+      - image: radial/busyboxplus
+        command:
+          - sleep
+          - "3600"
+        imagePullPolicy: IfNotPresent
+        name: busyboxplus
+        resources:
+          limits:
+            # cpu: 100M
+            memory: 100Mi
+    restartPolicy: Always

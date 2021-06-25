@@ -5,6 +5,15 @@
 *.so
 *.dylib
 
+# cli
+cli/basic/cmd/basic
+
+# config
+config/viperconfig/viperconfig
+
+# resource file
+parselog/query.log
+
 # Test binary, built with `go test -c`
 *.test
 
