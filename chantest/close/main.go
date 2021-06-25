@@ -33,6 +33,14 @@ func main() {
 	time.Sleep(5 * time.Second)
 	close(done)
 
+	t := make(chan bool, 3)
+	for i := 0; i < 3; i++ {
+		t <- true
+	}
+
+	close(t)
+	fmt.Println("t", len(t))
+
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc,
 		syscall.SIGINT,
