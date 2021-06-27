@@ -12,6 +12,7 @@ require (
 	github.com/getsentry/raven-go v0.2.0
 	github.com/getsentry/sentry-go v0.10.0
 	github.com/go-redis/redis/v8 v8.7.1
+	github.com/go-redsync/redsync/v4 v4.0.4
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/graphql-go/graphql v0.7.9
 	github.com/jinzhu/inflection v1.0.0
