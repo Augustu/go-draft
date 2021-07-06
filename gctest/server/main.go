@@ -2,8 +2,6 @@ package main
 
 import (
 	"net/http"
-	"runtime"
-	"time"
 )
 
 func test(w http.ResponseWriter, r *http.Request) {
@@ -13,16 +11,16 @@ func test(w http.ResponseWriter, r *http.Request) {
 	// 	r.Body.Close()
 	// }
 
-	r.Body.Close()
+	// r.Body.Close()
 }
 
 func main() {
-	go func() {
-		for {
-			runtime.GC()
-			time.Sleep(time.Millisecond)
-		}
-	}()
+	// go func() {
+	// 	for {
+	// 		runtime.GC()
+	// 		time.Sleep(time.Millisecond)
+	// 	}
+	// }()
 
 	http.HandleFunc("/test", test)
 	http.ListenAndServe("127.0.0.1:8000", nil)
