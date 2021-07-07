@@ -16,6 +16,7 @@ parselog/query.log
 
 # bin
 gctest/server/server
+memory/memory
 
 # Test binary, built with `go test -c`
 *.test
