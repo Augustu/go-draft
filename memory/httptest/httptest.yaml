@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httptest
+  namespace: dev
+  labels:
+    app: httptest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httptest
+  template:
+    metadata:
+      labels:
+        app: httptest
+    spec:
+      restartPolicy: Always
+      dnsPolicy: Default
+      containers:
+        - image: httptest:v1
+          name: httptest
+          imagePullPolicy: IfNotPresent
+          # env:
+          #   - name: APP_ENV
+          #     value: ""
+          #   - name: APP_NAME
+          #     value: ""
+          #   - name: APOLLO_CONFIG_SERVER
+          #     value: "http://apolloxxx.development:8080"
+          #   - name: APOLLO_CLUSTER
+          #     value: "dev"
+          #   - name: APOLLO_APP_ID
+          #     value: "mission"
+          #   - name: APOLLO_NAMESPACES
+          #     value: "application"
+          #   - name: APOLLO_SAVE_PATH
+          #     value: ""
+          resources:
+           limits:
+             cpu: '2'
+             memory: 150Mi
+           requests:
+             cpu: '2'
+             memory: 100Mi
+        # - image: redis:latest
+        #   name: redis
+        #   imagePullPolicy: IfNotPresent
+        #   resources:
+        #     limits:
+        #       memory: 512Mi
+        #       cpu: "1"
+        #     requests:
+        #       memory: 256Mi
+        #       cpu: "0.2"

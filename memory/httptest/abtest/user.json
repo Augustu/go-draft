@@ -1,0 +1,8 @@
+{
+    "username": "user-1",
+    "password": "password",
+    "gender": "male",
+    "age": 18,
+    "title": "user-title",
+    "description": "user-desription"
+}
