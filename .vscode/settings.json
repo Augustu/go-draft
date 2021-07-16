@@ -1,0 +1,7 @@
+{
+    "protoc": {
+        "options": [
+            "--proto_path=/home/augustu/Software/go/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.9.5/third_party/googleapis"
+        ]
+    }
+}

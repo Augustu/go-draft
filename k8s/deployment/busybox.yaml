@@ -4,7 +4,7 @@ metadata:
     name: busyboxplus
     namespace: dev
 spec:
-    dnsPolicy: Default
+    # dnsPolicy: Default
     containers:
       - image: radial/busyboxplus
         command:

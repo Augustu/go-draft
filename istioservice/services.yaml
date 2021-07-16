@@ -1,0 +1,219 @@
+##################################################################################################
+# Service A
+##################################################################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a-v1
+  namespace: dev
+  labels:
+    app: service-a
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-a
+      # version: v1
+  template:
+    metadata:
+      labels:
+        app: service-a
+        version: v1
+    spec:
+      restartPolicy: Always
+      # dnsPolicy: Default
+      containers:
+        - image: service-a:v1
+          name: service-a
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+            - containerPort: 50051
+          resources:
+           limits:
+             cpu: 100m
+             memory: 100Mi
+           requests:
+             cpu: 50m
+             memory: 50Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a-v2
+  namespace: dev
+  labels:
+    app: service-a
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-a
+      # version: v1
+  template:
+    metadata:
+      labels:
+        app: service-a
+        version: v2
+    spec:
+      restartPolicy: Always
+      # dnsPolicy: Default
+      containers:
+        - image: service-a:v1
+          name: service-a
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+            - containerPort: 50051
+          resources:
+           limits:
+             cpu: 100m
+             memory: 100Mi
+           requests:
+             cpu: 50m
+             memory: 50Mi
+---
+##################################################################################################
+# Service B
+##################################################################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b-v1
+  namespace: dev
+  labels:
+    app: service-b
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-b
+      # version: v1
+  template:
+    metadata:
+      labels:
+        app: service-b
+        version: v1
+    spec:
+      restartPolicy: Always
+      # dnsPolicy: Default
+      containers:
+        - image: service-b:v1
+          name: service-b
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50051
+          resources:
+           limits:
+             cpu: 100m
+             memory: 100Mi
+           requests:
+             cpu: 50m
+             memory: 50Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b-v2
+  namespace: dev
+  labels:
+    app: service-b
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-b
+      # version: v1
+  template:
+    metadata:
+      labels:
+        app: service-b
+        version: v2
+    spec:
+      restartPolicy: Always
+      # dnsPolicy: Default
+      containers:
+        - image: service-b:v1
+          name: service-b
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50051
+          resources:
+           limits:
+             cpu: 100m
+             memory: 100Mi
+           requests:
+             cpu: 50m
+             memory: 50Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-b-v3
+  namespace: dev
+  labels:
+    app: service-b
+    version: v3
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-b
+      # version: v1
+  template:
+    metadata:
+      labels:
+        app: service-b
+        version: v3
+    spec:
+      restartPolicy: Always
+      # dnsPolicy: Default
+      containers:
+        - image: service-b:v1
+          name: service-b
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50051
+          resources:
+           limits:
+             cpu: 100m
+             memory: 100Mi
+           requests:
+             cpu: 50m
+             memory: 50Mi
+---
+##################################################################################################
+# Services
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-a
+  namespace: dev
+spec:
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+    nodePort: 30088
+  selector:
+    app: service-a
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-b
+  namespace: dev
+spec:
+  ports:
+  - port: 50051
+    protocol: TCP
+    targetPort: 50051
+  selector:
+    app: service-b
+  type: ClusterIP
