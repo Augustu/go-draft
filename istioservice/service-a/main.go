@@ -17,14 +17,29 @@ import (
 
 const (
 	ServiceBAddr string = "service-b:50051"
+	// ServiceBAddr string = "127.0.0.1:50052"
 )
 
 type server struct {
 	pb.UnimplementedGreeterServer
+
+	clientB pb.GreeterClient
+}
+
+func newServer(addrB string) *server {
+	conn, err := grpc.Dial(addrB, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+
+	return &server{
+		clientB: pb.NewGreeterClient(conn),
+	}
 }
 
 func (s *server) SayHello(c context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {
-	reply := SayHello(ServiceBAddr)
+	reply := s.SayHelloB(ServiceBAddr)
+	// reply := "fack"
 	log.Printf("Greeting: %s from %s", reply, ServiceBAddr)
 
 	return &pb.HelloReply{
@@ -32,27 +47,20 @@ func (s *server) SayHello(c context.Context, req *pb.HelloRequest) (*pb.HelloRep
 	}, nil
 }
 
-func SayHello(addr string) string {
-	conn, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
+func (s *server) SayHelloB(addr string) string {
 
-	c := pb.NewGreeterClient(conn)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: "service-a"})
+	r, err := s.clientB.SayHello(ctx, &pb.HelloRequest{Name: "service-a"})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Printf("could not greet: %v", err)
 	}
 
 	return r.GetMessage()
 }
 
-func GrpcServe(addr string, stopCh <-chan struct{}) (<-chan struct{}, error) {
+func GrpcServe(addr, grpcAddr string, stopCh <-chan struct{}) (<-chan struct{}, error) {
 	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		fmt.Printf("serve: %s", err)
@@ -60,7 +68,7 @@ func GrpcServe(addr string, stopCh <-chan struct{}) (<-chan struct{}, error) {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterGreeterServer(grpcServer, &server{})
+	pb.RegisterGreeterServer(grpcServer, newServer(grpcAddr))
 
 	stoppedCh := make(chan struct{})
 
@@ -142,7 +150,7 @@ func main() {
 
 	stopCh := shutdownsignal.SetupSignalHandler()
 
-	grpcStoppedCh, _ := GrpcServe(grpcAddr, stopCh)
+	grpcStoppedCh, _ := GrpcServe(grpcAddr, ServiceBAddr, stopCh)
 	httpStoppedCh, _ := HTTPServe(httpAddr, grpcAddr, timeout, stopCh)
 
 	<-stopCh

@@ -20,6 +20,9 @@ spec:
       labels:
         app: service-a
         version: v1
+      annotations:
+        kubernetes.io/ingress-bandwidth: 1M
+        kubernetes.io/egress-bandwidth: 1M
     spec:
       restartPolicy: Always
       # dnsPolicy: Default
@@ -31,9 +34,9 @@ spec:
             - containerPort: 8000
             - containerPort: 50051
           resources:
-           limits:
-             cpu: 100m
-             memory: 100Mi
+          #  limits:
+          #    cpu: 1000m
+          #    memory: 1024Mi
            requests:
              cpu: 50m
              memory: 50Mi
@@ -47,7 +50,7 @@ metadata:
     app: service-a
     version: v2
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: service-a
@@ -68,9 +71,83 @@ spec:
             - containerPort: 8000
             - containerPort: 50051
           resources:
-           limits:
-             cpu: 100m
-             memory: 100Mi
+          #  limits:
+          #    cpu: 1000m
+          #    memory: 1024Mi
+           requests:
+             cpu: 50m
+             memory: 50Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a-v3
+  namespace: dev
+  labels:
+    app: service-a
+    version: v3
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: service-a
+      # version: v1
+  template:
+    metadata:
+      labels:
+        app: service-a
+        version: v3
+    spec:
+      restartPolicy: Always
+      # dnsPolicy: Default
+      containers:
+        - image: service-a:v1
+          name: service-a
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+            - containerPort: 50051
+          resources:
+          #  limits:
+          #    cpu: 1000m
+          #    memory: 1024Mi
+           requests:
+             cpu: 50m
+             memory: 50Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-a-v4
+  namespace: dev
+  labels:
+    app: service-a
+    version: v4
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: service-a
+      # version: v1
+  template:
+    metadata:
+      labels:
+        app: service-a
+        version: v4
+    spec:
+      restartPolicy: Always
+      # dnsPolicy: Default
+      containers:
+        - image: service-a:v1
+          name: service-a
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+            - containerPort: 50051
+          resources:
+          #  limits:
+          #    cpu: 1000m
+          #    memory: 1024Mi
            requests:
              cpu: 50m
              memory: 50Mi
@@ -107,9 +184,9 @@ spec:
           ports:
             - containerPort: 50051
           resources:
-           limits:
-             cpu: 100m
-             memory: 100Mi
+          #  limits:
+          #    cpu: 1000m
+          #    memory: 1024Mi
            requests:
              cpu: 50m
              memory: 50Mi
@@ -123,7 +200,7 @@ metadata:
     app: service-b
     version: v2
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: service-b
@@ -143,9 +220,9 @@ spec:
           ports:
             - containerPort: 50051
           resources:
-           limits:
-             cpu: 100m
-             memory: 100Mi
+          #  limits:
+          #    cpu: 100m
+          #    memory: 100Mi
            requests:
              cpu: 50m
              memory: 50Mi
@@ -159,7 +236,7 @@ metadata:
     app: service-b
     version: v3
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app: service-b
@@ -179,9 +256,9 @@ spec:
           ports:
             - containerPort: 50051
           resources:
-           limits:
-             cpu: 100m
-             memory: 100Mi
+          #  limits:
+          #    cpu: 100m
+          #    memory: 100Mi
            requests:
              cpu: 50m
              memory: 50Mi
