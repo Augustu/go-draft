@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-1
+  labels:
+    app: mysql-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-1
+  template:
+    metadata:
+      labels:
+        app: mysql-1
+    spec:
+      volumes:
+      - name: mysql-1-volume
+        persistentVolumeClaim:
+          claimName: pvc-nfs-mysql-1
+      containers:
+        - image: mysql
+          name: mysql-1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: FuCkU@!@#$%^
+          resources:
+           limits:
+             memory: 512Mi
+             cpu: 500m
+           requests:
+             memory: 50Mi
+             cpu: 50m
+          volumeMounts:
+          - name: mysql-1-volume
+            mountPath: /var/lib/mysql
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-1-service
+spec:
+  selector:
+    app: mysql-1
+  ports:
+    - name: mysql
+      port: 3306
+      protocol: TCP
+      targetPort: 33306
+  type: NodePort
+---
