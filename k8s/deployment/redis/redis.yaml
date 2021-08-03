@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: "managed-nfs-storage"  # 这里指定storageClass名称
+---
+apiVersion: v1
+kind: Service
+metadata:
+ name: redis-service
+ labels:
+   name: redis-service
+spec:
+ type: NodePort   # 如果需要集群外部访问,这里改为NodePort
+ ports:
+ - port: 6379
+   protocol: TCP
+   nodePort: 32379
+   name: redis
+ selector:
+   name: redis   # 这里填写Deployment/metadata/name 的值
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis
+  name: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: redis
+  template:
+    metadata:
+      labels:
+        name: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+        volumeMounts:
+        # - name: configmap-volume
+        #   mountPath: /usr/local/etc/redis/redis.conf
+        #   subPath: redis.conf
+        - name: redis
+          mountPath: "/data"
+      volumes:
+      # - name: configmap-volume
+      #   configMap:
+      #     name: redis-cm
+      #     items:
+      #     - key: redis.conf
+      #       path: redis.conf
+      - name: redis
+        persistentVolumeClaim:
+          claimName: redis-pvc  # 这里填写pvc的名称

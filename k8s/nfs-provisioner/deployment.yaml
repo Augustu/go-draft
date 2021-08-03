@@ -21,7 +21,7 @@ spec:
       serviceAccountName: nfs-client-provisioner
       containers:
         - name: nfs-client-provisioner
-          image: k8s.gcr.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2 
+          image: k8s.gcr.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
           volumeMounts:
             - name: nfs-client-root
               mountPath: /persistentvolumes
@@ -29,15 +29,15 @@ spec:
             - name: PROVISIONER_NAME
               value: nfs-dynamic-storage # < new provsioner name
             - name: NFS_SERVER
-              value: 192.168.50.10 # < IP address of your NAS server
+              value: 10.10.15.11 # < IP address of your NAS server
             - name: NFS_PATH
-              value: /home/augustu/data # < example value of your nfs share
+              value: /data # < example value of your nfs share
           resources:
               limits:
-                cpu: 200Mi
-                memory: 100Mi
+                # cpu: 500Mi
+                memory: 200Mi
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 192.168.50.10 # < IP address of your NAS server
-            path: /home/augustu/data # < example value of your nfs share
+            server: 10.10.15.11 # < IP address of your NAS server
+            path: /data # < example value of your nfs share
