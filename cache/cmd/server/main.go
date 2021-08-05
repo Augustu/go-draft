@@ -21,7 +21,6 @@ const (
 	host   string = "10.10.15.11:32379"
 	passwd string = ""
 
-	// addr string = "0.0.0.0:8000"
 	addr string = "127.0.0.1:8000"
 )
 
@@ -109,9 +108,11 @@ func main() {
 
 	cf := newConfig()
 
-	go func(s *config.Store) {
-		storeHandler(s)
-	}(&cf.Store)
+	for i := 0; i < 8; i++ {
+		go func(s *config.Store) {
+			storeHandler(s)
+		}(&cf.Store)
+	}
 
 	shutdownHandler := make(chan os.Signal, 2)
 	var shutdownSignals = []os.Signal{os.Interrupt, syscall.SIGTERM}
