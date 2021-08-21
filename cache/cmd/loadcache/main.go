@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/go-redsync/redsync/v4"
+	"github.com/go-redsync/redsync/v4/redis/goredis/v8"
 
 	"github.com/Augustu/go-draft/cache/cmd/server/model"
 	"github.com/Augustu/go-draft/cache/pkg/cache"
@@ -17,9 +19,33 @@ import (
 
 const (
 	dsn string = "root:FuCkU@!@#$%^@tcp(127.0.0.1:30306)/cache?charset=utf8mb4&parseTime=True&loc=Local"
+	// dsn string = "root:FuCkU@!@#$%^@tcp(118.31.14.196:30306)/cache?charset=utf8mb4&parseTime=True&loc=Local"
 
-	host   string = "10.10.15.11:32379"
+	host string = "127.0.0.1:32379"
+	// host   string = "118.31.14.196:32379"
 	passwd string = ""
+
+	updateStats = `local key = KEYS[1]
+	local min = ARGV[1]
+	local max = ARGV[2]
+	local num = ARGV[3]
+	
+	local res = redis.call('zrangebyscore', key, min, max)
+	local data = res[1]
+	if ( data == nil ) then
+			local newmember = cjson.encode({s = num})
+			redis.call('zadd', key, min, newmember)
+			return 1
+	end
+	
+	local json = cjson.decode(data)
+	json.s = json.s + num
+	
+	local updated = cjson.encode(json)
+	redis.call('zadd', key, min, updated)
+	
+	redis.call('zrem', key, data)
+	return 0`
 )
 
 func newConfig() config.Config {
@@ -39,6 +65,8 @@ type cacheLoader struct {
 	ctx context.Context
 	st  *store.Store
 	ca  *cache.Cache
+
+	evalsha string
 }
 
 func newCacheLoader(c config.Config) *cacheLoader {
@@ -50,19 +78,32 @@ func newCacheLoader(c config.Config) *cacheLoader {
 	cl.st = store.New(&c.Store)
 	cl.ca = cache.New(&c.Cache)
 
-	// pool := goredis.NewPool(cl.ca.Client)
-	// cl.rs = redsync.New(pool)
+	pool := goredis.NewPool(cl.ca.Client)
+	cl.rs = redsync.New(pool)
 
-	// mutexname := "global-mutex"
-	// cl.lock = cl.rs.NewMutex(mutexname)
+	mutexname := "global-mutex"
+	cl.lock = cl.rs.NewMutex(mutexname,
+		redsync.WithRetryDelay(100*time.Millisecond),
+		redsync.WithTries(3))
 
 	return &cl
+}
+
+func (cl *cacheLoader) init() {
+	sha, err := cl.ca.Client.ScriptLoad(cl.ctx, updateStats).Result()
+	if err != nil {
+		log.Fatalf("load lua script failed: %s", err)
+		return
+	}
+
+	cl.evalsha = sha
+	log.Printf("eval sha: %s", cl.evalsha)
 }
 
 func (cl *cacheLoader) loadStats() {
 	defer close(cl.statsChan)
 
-	batchsize := 10000
+	batchsize := 1000
 	offset := 0
 
 	cl.st.DB = cl.st.DB.Debug()
@@ -78,7 +119,7 @@ func (cl *cacheLoader) loadStats() {
 			continue
 		}
 
-		log.Printf("find stats: %d", len(sts))
+		log.Printf("find stats: %d, len statschan: %d", len(sts), len(cl.statsChan))
 
 		for _, s := range sts {
 			cl.statsChan <- s
@@ -100,7 +141,7 @@ type scoreKey struct {
 	Score int `json:"s"`
 }
 
-func (cl *cacheLoader) cacheKey(pkey string, key, value int) {
+func (cl *cacheLoader) cacheKeyWithLock(pkey string, key, value int) {
 	// t1 := time.Now()
 
 	// if err := cl.lock.Lock(); err != nil {
@@ -108,21 +149,26 @@ func (cl *cacheLoader) cacheKey(pkey string, key, value int) {
 	// 	return
 	// }
 
-	// mutexKey := pkey + "-" + strconv.Itoa(value)
-	// mutex := cl.rs.NewMutex(mutexKey, redsync.WithRetryDelay(time.Second), redsync.WithExpiry(3*time.Second))
-	// if err := mutex.Lock(); err != nil {
-	// 	log.Printf("fetch global lock failed: %s", err)
-	// 	return
-	// }
-
 	// defer func() {
-	// 	// if ok, err := cl.lock.Unlock(); !ok || err != nil {
-	// 	// 	log.Printf("unlock failed")
-	// 	// }
-	// 	if ok, err := mutex.Unlock(); !ok || err != nil {
+	// 	if ok, err := cl.lock.Unlock(); !ok || err != nil {
 	// 		log.Printf("unlock failed")
 	// 	}
 	// }()
+
+	mutexKey := pkey + "-" + strconv.Itoa(value)
+	mutex := cl.rs.NewMutex(mutexKey, redsync.WithRetryDelay(100*time.Millisecond), redsync.WithTries(3))
+	if err := mutex.Lock(); err != nil {
+		log.Printf("fetch global lock failed: %s", err)
+		return
+	}
+
+	defer func() {
+		if ok, err := mutex.Unlock(); !ok || err != nil {
+			log.Printf("unlock failed")
+		}
+	}()
+
+	// cl.ca.Client.Ping(cl.ctx).Result()
 
 	vs := strconv.Itoa(value)
 
@@ -183,20 +229,48 @@ func (cl *cacheLoader) cacheKey(pkey string, key, value int) {
 	// log.Printf("deal one in: %s", t2.Sub(t1).String())
 }
 
+func (cl *cacheLoader) cacheKey(pkey string, key, value int) {
+	vkey := strconv.Itoa(key)
+	vs := strconv.Itoa(value)
+
+	res, err := cl.ca.Client.EvalSha(cl.ctx, cl.evalsha, []string{pkey}, vs, vs, vkey).Result()
+	if err != nil {
+		log.Printf("set pkey: %s key: %d value: %d failed: %s, res: %s", pkey, key, value, err, res)
+	}
+}
+
 func (cl *cacheLoader) migrateCache() {
+	// t1 := time.Now()
+	// count := 0
+
 	for s := range cl.statsChan {
+		// if count >= 1000 {
+		// 	t2 := time.Now()
+		// 	sub := t2.Sub(t1).Milliseconds()
+		// 	log.Printf("handle 1000 in %d ms", sub)
+
+		// 	log.Printf("sleep %d ms", time.Duration(1000-sub))
+		// 	time.Sleep(time.Duration(1000-sub) * time.Millisecond)
+
+		// 	t1 = time.Now()
+		// 	count = 0
+		// }
+
+		// count++
 		pkey := "stats:a:" + strconv.Itoa(s.A)
 		value := int(s.OccurredAt.Unix())
 
 		cl.cacheKey(pkey+":b", s.B, value)
-		cl.cacheKey(pkey+":c", s.C, value)
-		cl.cacheKey(pkey+":d", s.D, value)
+		// cl.cacheKey(pkey+":c", s.C, value)
+		// cl.cacheKey(pkey+":d", s.D, value)
 	}
 }
 
 func main() {
 	c := newConfig()
 	cl := newCacheLoader(c)
+
+	cl.init()
 
 	log.Printf("start")
 	go cl.loadStats()

@@ -29,9 +29,9 @@ spec:
             - name: PROVISIONER_NAME
               value: nfs-dynamic-storage # < new provsioner name
             - name: NFS_SERVER
-              value: 10.10.15.11 # < IP address of your NAS server
+              value: 192.168.0.200 # < IP address of your NAS server
             - name: NFS_PATH
-              value: /data # < example value of your nfs share
+              value: /data/data # < example value of your nfs share
           resources:
               limits:
                 # cpu: 500Mi
@@ -39,5 +39,5 @@ spec:
       volumes:
         - name: nfs-client-root
           nfs:
-            server: 10.10.15.11 # < IP address of your NAS server
-            path: /data # < example value of your nfs share
+            server: 192.168.0.200 # < IP address of your NAS server
+            path: /data/data # < example value of your nfs share

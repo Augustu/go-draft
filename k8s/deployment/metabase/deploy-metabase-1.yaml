@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metabase
+  labels:
+    app: metabase
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metabase
+  template:
+    metadata:
+      labels:
+        app: metabase
+    spec:
+      volumes:
+      - name: metabase-volume
+        persistentVolumeClaim:
+          claimName: pvc-nfs-metabase
+      containers:
+        - image: metabase/metabase
+          name: metabase
+          imagePullPolicy: IfNotPresent
+          resources:
+           limits:
+             memory: 512Mi
+             cpu: 500m
+           requests:
+             memory: 50Mi
+             cpu: 50m
+          env:
+            - name: MB_DB_FILE
+              value: /metabase-data/metabase.db
+          volumeMounts:
+          - name: metabase-volume
+            mountPath: /metabase-data
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: metabase-service
+spec:
+  selector:
+    app: metabase
+  ports:
+    - name: metabase
+      port: 3000
+      protocol: TCP
+      nodePort: 32730
+  type: NodePort
+---

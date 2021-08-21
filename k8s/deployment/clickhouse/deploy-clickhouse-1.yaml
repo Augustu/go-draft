@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clickhouse-1
+  labels:
+    app: clickhouse-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clickhouse-1
+  template:
+    metadata:
+      labels:
+        app: clickhouse-1
+    spec:
+      volumes:
+      - name: clickhouse-1-volume
+        persistentVolumeClaim:
+          claimName: pvc-nfs-clickhouse-1
+      containers:
+        - image: yandex/clickhouse-server
+          name: clickhouse-1
+          imagePullPolicy: IfNotPresent
+          resources:
+           limits:
+             memory: 512Mi
+             cpu: 500m
+           requests:
+             memory: 50Mi
+             cpu: 50m
+          volumeMounts:
+          - name: clickhouse-1-volume
+            mountPath: /var/lib/clickhouse
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: clickhouse-1-service
+spec:
+  selector:
+    app: clickhouse-1
+  ports:
+    - name: clickhouse-tcp
+      port: 9000
+      protocol: TCP
+      nodePort: 32390
+    - name: clickhouse-http
+      port: 8123
+      protocol: TCP
+      nodePort: 32723
+  type: NodePort
+---

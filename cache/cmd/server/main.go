@@ -16,9 +16,9 @@ import (
 )
 
 const (
-	dsn string = "root:FuCkU@!@#$%^@tcp(10.10.15.11:32306)/cache?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn string = "root:123456@tcp(192.168.0.200:32306)/cache?charset=utf8mb4&parseTime=True&loc=Local"
 
-	host   string = "10.10.15.11:32379"
+	host   string = "192.168.0.200:32379"
 	passwd string = ""
 
 	addr string = "127.0.0.1:8000"
